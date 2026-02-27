@@ -1,5 +1,5 @@
 <img width="856" height="826" alt="image" src="https://github.com/user-attachments/assets/76cb8de8-0bd8-497b-82c2-cc39c7136553" />
-<img width="856" height="826" alt="image" src="https://github.com/user-attachments/assets/76cb8de8-0bd8-497b-82c2-cc39c7136553" />
+
 **MSc-Thesis-Template**
 
 Portfolio-grade R templates for longitudinal data integrity, attrition/selectivity reporting, two-wave change-score construction, mixed-effects modeling (LME), mediation-style decomposition (bootstrap), and interaction visualization using estimated marginal means.
