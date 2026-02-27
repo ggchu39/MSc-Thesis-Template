@@ -9,3 +9,5 @@ repository-code: "https://github.com/ggchu39/MSc-Thesis-Template"
 url: "https://github.com/ggchu39/MSc-Thesis-Template"
 license: "MIT"
 year: 2024
+
+Cite: Chu, G. W. (2024). Longitudinal Neuroimaging Statistics Toolkit: Data QA, Attrition/Selectivity, LME, and Bootstrap Mediation (Template) (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.18808199
