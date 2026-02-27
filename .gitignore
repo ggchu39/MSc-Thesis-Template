@@ -4,46 +4,56 @@
 
 # Session Data files
 .RData
+*.RData
 .RDataTmp
+.RDataTmp/
 
 # User-specific files
 .Ruserdata
 
-# Example code in package build process
-*-Ex.R
-
-# Output files from R CMD build
-/*.tar.gz
-
-# Output files from R CMD check
-/*.Rcheck/
-
 # RStudio files
 .Rproj.user/
+*.Rproj
 
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
-
-# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+# OAuth2 token
 .httr-oauth
 
-# knitr and R markdown default cache directories
+# knitr / rmarkdown cache
 *_cache/
-/cache/
-
-# Temporary files created by R markdown
+cache/
 *.utf8.md
 *.knit.md
 
-# R Environment Variables
+# Quarto
+.quarto/
+_freeze/
+_site/
+
+# Build/check artifacts
+*-Ex.R
+/*.tar.gz
+/*.Rcheck/
+
+# Vignettes (if any)
+vignettes/*.html
+vignettes/*.pdf
+
+# Environment variables
 .Renviron
 
-# pkgdown site
-docs/
+# Outputs (template repos should not commit generated results)
+analysis/_demo_outputs/**
+!analysis/_demo_outputs/.gitkeep
 
-# translation temp files
+# Saved objects (avoid leaking results)
+*.rds
+*.Rds
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Misc
 po/*~
-
-# RStudio Connect folder
 rsconnect/
+
