@@ -1,0 +1,106 @@
+---
+title: "Example: MSc thesis template (2-wave QA + attrition + LME + mediation)"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+source("R/msc_thesis_template.R")
+set.seed(1)
+
+# ---- Simulate long 2-wave data ----
+n_id <- 120
+ids <- sprintf("P%03d", 1:n_id)
+
+df_tp1 <- data.frame(
+  ID = ids,
+  time_point = 1,
+  Age = runif(n_id, 20, 82),
+  Sex = sample(c("F","M"), n_id, replace = TRUE),
+  ROI = rnorm(n_id, 1.5, 0.2),
+  EM  = rnorm(n_id, 50, 6)
+)
+
+# dropout
+returnee <- sample(c(TRUE, FALSE), n_id, replace = TRUE, prob = c(0.55, 0.45))
+df_tp2 <- df_tp1[returnee, ]
+df_tp2$time_point <- 2
+df_tp2$ROI <- df_tp2$ROI - rnorm(nrow(df_tp2), 0.05, 0.06)
+df_tp2$EM  <- df_tp2$EM  - rnorm(nrow(df_tp2), 1.0,  2.0)
+
+df_long <- rbind(df_tp1, df_tp2)
+
+# ---- QA ----
+df_long <- qa_make_age_corrected(df_long, id="ID", time_var="time_point", age_var="Age",
+                                 followup_level=2, followup_increment=4)
+
+df_long <- qa_make_age_groups(df_long, age_corrected_var="Age_Corrected",
+                              breaks = seq(20, 90, 10))
+
+dups <- qa_check_duplicates(df_long, id="ID", time_var="time_point")
+nrow(dups)
+
+cc <- qa_complete_case(df_long, required_vars = c("ID","time_point","Age_Corrected","Sex","ROI","EM"))
+df_long_cc <- cc$df
+cc$dropped_n
+
+# ---- Attrition ----
+df_long_cc <- attrition_status(df_long_cc, id="ID", time_var="time_point", followup_level=2)
+attrition_summary(df_long_cc, id="ID", time_var="time_point")
+
+# baseline selectivity tests (toy example)
+df_base <- subset(df_long_cc, time_point == 1)
+baseline_returnee_tests(
+  df_baseline = df_base,
+  status_var = "Status",
+  vars_continuous = c("Age_Corrected","ROI","EM"),
+  vars_categorical = c("Sex"),
+  welch = TRUE,
+  yates = TRUE
+)
+
+# ---- Wide + change scores ----
+df_wide <- make_wide_two_wave(df_long_cc, id="ID", time_var="time_point", vars=c("ROI","EM"))
+df_wide <- compute_change_set(df_wide, vars=c("ROI","EM"), method="pct")
+
+head(df_wide)
+
+# one paired t-test (toy)
+stats::t.test(df_wide$EM_TP2, df_wide$EM_TP1, paired = TRUE)
+
+# one correlation (toy)
+stats::cor.test(df_wide$ROI_TP1, df_wide$Change_ROI)
+
+# ---- LME example ----
+# use long-format, random intercept
+lme_res <- fit_lme_safely(EM ~ Sex * time_point + Age_Corrected + (1|ID), data=df_long_cc, reml=FALSE)
+lme_res$warns
+fit <- lme_res$fit
+summary(fit)
+
+# lightweight diagnostics (plots)
+# lme_basic_diagnostics(fit)
+
+# ---- Mediation demo (small sims for speed; thesis used larger sims) ----
+# wide-format mediation on change variables (toy)
+df_med <- df_wide
+df_med$Sex_num <- as.numeric(factor(df_long_cc[df_long_cc$time_point==1,"Sex"], levels=c("F","M")))
+
+mediation_decompose(
+  df = df_med,
+  treat = "Sex_num",
+  mediator = "Change_ROI",
+  outcome = "Change_EM",
+  covariates = NULL,
+  sims = 300,
+  seed = 123
+)
+
+dir.create("analysis/_demo_outputs", showWarnings = FALSE, recursive = TRUE)
+write.csv(attrition_summary(df_long_cc, "ID", "time_point"),
+          "analysis/_demo_outputs/attrition_summary.csv",
+          row.names = FALSE)
+
+
