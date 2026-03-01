@@ -1,13 +1,14 @@
 cff-version: 1.2.0
 message: "If you use or adapt this repository, please cite it."
 type: software
-title: "rjf-repro-template"
+title: "MSc-Thesis-Template"
 authors:
   - family-names: "Chu"
     given-names: "Georgina Waner"
+    orcid: "https://orcid.org/0009-0007-3645-795X"
 repository-code: "https://github.com/ggchu39/MSc-Thesis-Template"
 url: "https://github.com/ggchu39/MSc-Thesis-Template"
-license: "MIT"
-year: 2024
-
-Cite: Chu, G. W. (2024). Longitudinal Neuroimaging Statistics Toolkit: Data QA, Attrition/Selectivity, LME, and Bootstrap Mediation (Template) (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.18808199
+license: MIT
+doi: 10.5281/zenodo.18808199
+version: "v1.0.1"
+date-released: "2024-01-01"
